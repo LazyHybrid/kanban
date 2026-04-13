@@ -1,5 +1,6 @@
 import { defineComponent, h } from "../framework.js"
 
+// Simple dashboard view that links into each board route.
 export const BoardList = defineComponent(({ boards, navigate }) => {
   return h(
     "section",
@@ -8,6 +9,7 @@ export const BoardList = defineComponent(({ boards, navigate }) => {
     h(
       "div",
       { className: "board-grid" },
+      // Each tile is a small reusable summary of a board.
       boards.map((board) =>
         h(
           "article",

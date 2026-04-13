@@ -4,16 +4,19 @@ import { BoardList } from "./components/BoardList.js"
 import { BoardView } from "./components/BoardView.js"
 import { CardDetail } from "./components/CardDetail.js"
 
+// Counts cards for the small dashboard summary at the top of the page.
 function totalCards(boards) {
   return boards.reduce((sum, board) => {
     return sum + board.columns.reduce((columnSum, column) => columnSum + column.cards.length, 0)
   }, 0)
 }
 
+// Finds the active board from the current route param.
 function findBoard(boards, boardId) {
   return boards.find((board) => board.id === boardId) || null
 }
 
+// Finds the active card for the side detail panel.
 function findCard(board, cardId) {
   if (!board) {
     return null
@@ -30,6 +33,7 @@ function findCard(board, cardId) {
   return null
 }
 
+// Keeps board updates focused so card actions do not rewrite unrelated boards.
 function withUpdatedBoard(state, boardId, updateBoard) {
   return {
     ...state,
@@ -37,6 +41,7 @@ function withUpdatedBoard(state, boardId, updateBoard) {
   }
 }
 
+// Generates simple demo ids for new cards.
 function createCardId() {
   return `card-${Date.now()}`
 }
@@ -46,6 +51,7 @@ export function renderApp({ store, route, navigate }) {
   const activeBoard = route.params.boardId ? findBoard(state.boards, route.params.boardId) : null
   const activeCard = route.params.cardId ? findCard(activeBoard, route.params.cardId) : null
 
+  // These actions are passed into components so the UI stays declarative.
   const actions = {
     setQuery(query) {
       store.update((current) => ({
@@ -95,6 +101,7 @@ export function renderApp({ store, route, navigate }) {
         }))
       })
 
+      // If the open detail card was deleted, move the user back to the board route.
       if (route.params.cardId === cardId) {
         navigate(`/boards/${boardId}`)
       }
@@ -143,6 +150,7 @@ export function renderApp({ store, route, navigate }) {
 
   let pageContent
 
+  // The current route decides which high-level screen the app renders.
   if (route.name === "home") {
     pageContent = h(BoardList, {
       boards: state.boards,

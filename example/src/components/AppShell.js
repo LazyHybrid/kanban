@@ -1,5 +1,6 @@
 import { defineComponent, h } from "../framework.js"
 
+// Shared page shell for the example app: header, quick stats, and top navigation.
 export const AppShell = defineComponent(({ activeBoard, boardCount, cardCount, children, navigate, query, setQuery }) => {
   return h(
     "div",
@@ -21,6 +22,7 @@ export const AppShell = defineComponent(({ activeBoard, boardCount, cardCount, c
       h(
         "div",
         { className: "hero__stats" },
+        // These small stats make shared state changes easy to see while learning.
         h("div", { className: "stat" }, h("span", { className: "stat__label" }, "Boards"), h("strong", {}, String(boardCount))),
         h("div", { className: "stat" }, h("span", { className: "stat__label" }, "Cards"), h("strong", {}, String(cardCount))),
         h("div", { className: "stat" }, h("span", { className: "stat__label" }, "Current"), h("strong", {}, activeBoard ? activeBoard.name : "Dashboard"))
@@ -49,6 +51,7 @@ export const AppShell = defineComponent(({ activeBoard, boardCount, cardCount, c
         placeholder: "Filter cards by title or assignee",
         value: query,
         on: {
+          // The search box updates shared state so every column reacts together.
           input: (event) => setQuery(event.currentTarget.value)
         }
       })

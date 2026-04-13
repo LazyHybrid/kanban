@@ -1,3 +1,4 @@
+/* Shared color tokens keep the demo styling consistent and easy to tweak. */
 :root {
   color-scheme: light;
   --bg: #f7f4ee;
@@ -16,6 +17,7 @@
   box-sizing: border-box;
 }
 
+/* Basic page reset and background styling for the whole app. */
 body {
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
@@ -35,12 +37,14 @@ textarea {
   min-height: 100vh;
 }
 
+/* Main page shell used by the dashboard and board views. */
 .shell {
   width: min(1200px, calc(100% - 32px));
   margin: 0 auto;
   padding: 24px 0 48px;
 }
 
+/* Card-like panels give the demo a consistent visual language. */
 .hero,
 .panel,
 .column,
@@ -51,6 +55,7 @@ textarea {
   box-shadow: var(--shadow);
 }
 
+/* The hero introduces the app and exposes live shared-state totals. */
 .hero {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -119,6 +124,7 @@ textarea {
   font-weight: 700;
 }
 
+/* Search and form fields share the same input styling. */
 .search,
 .card-form input,
 .card-form textarea {
@@ -134,6 +140,7 @@ textarea {
 }
 
 .content,
+/* The workspace places the board beside the card detail panel. */
 .workspace {
   display: grid;
   gap: 20px;
@@ -156,6 +163,7 @@ textarea {
   padding: 20px;
 }
 
+/* Responsive grids make the demo readable without extra layout code. */
 .board-grid,
 .column-grid {
   display: grid;
@@ -194,6 +202,7 @@ textarea {
   margin: 16px 0;
 }
 
+/* Individual kanban cards are clickable because opening a card changes the route. */
 .kanban-card {
   padding: 14px;
   border-radius: 18px;
@@ -217,6 +226,7 @@ textarea {
   font-size: 0.85rem;
 }
 
+/* Small action buttons keep move and delete controls visually secondary. */
 .button,
 .mini-button {
   border: 0;
@@ -249,6 +259,7 @@ textarea {
   border-style: dashed;
 }
 
+/* Mobile layout collapses the two-column view into a single column. */
 @media (max-width: 920px) {
   .hero,
   .workspace {

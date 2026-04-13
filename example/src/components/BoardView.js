@@ -1,6 +1,7 @@
 import { defineComponent, h } from "../framework.js"
 import { CardForm } from "./CardForm.js"
 
+// Applies the quick search box to each column's card list.
 function filteredCards(cards, query) {
   if (!query) {
     return cards
@@ -20,6 +21,7 @@ export const BoardView = defineComponent(({ board, navigate, onAddCard, onDelete
     "section",
     {
       className: "board-view",
+      // The parent board container handles card actions through delegation.
       delegate: {
         click: [
           {
@@ -49,6 +51,7 @@ export const BoardView = defineComponent(({ board, navigate, onAddCard, onDelete
           {
             selector: ".kanban-card",
             handler: (_, ctx) => {
+              // Opening a card updates the URL so the detail view is route-driven.
               navigate(`/boards/${board.id}/cards/${ctx.delegateTarget.dataset.cardId}`)
             }
           }
@@ -79,6 +82,7 @@ export const BoardView = defineComponent(({ board, navigate, onAddCard, onDelete
           h(
             "div",
             { className: "card-stack" },
+            // The column renders only the cards that match the current filter.
             visibleCards.length > 0
               ? visibleCards.map((card) =>
                   h(

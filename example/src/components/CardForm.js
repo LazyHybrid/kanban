@@ -1,5 +1,6 @@
 import { defineComponent, h } from "../framework.js"
 
+// Small form component for creating cards inside a single column.
 export const CardForm = defineComponent(({ boardId, columnId, onAdd }) => {
   return h(
     "form",
@@ -8,6 +9,7 @@ export const CardForm = defineComponent(({ boardId, columnId, onAdd }) => {
       on: {
         submit: {
           preventDefault: true,
+          // Reads the form values, sends them upward, then clears the form.
           handler: (event) => {
             const formData = new FormData(event.currentTarget)
             const title = formData.get("title").trim()

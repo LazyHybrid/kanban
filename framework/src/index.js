@@ -1,3 +1,4 @@
+// Normalizes nested child arrays so components can return mixed structures safely.
 function flattenChildren(children) {
   return children.flatMap((child) => {
     if (Array.isArray(child)) {
@@ -8,10 +9,12 @@ function flattenChildren(children) {
   })
 }
 
+// Creates a plain deep copy for the small store implementation.
 function clone(value) {
   return JSON.parse(JSON.stringify(value))
 }
 
+// Creates the object shape the renderer understands.
 export function h(type, props = {}, ...children) {
   return {
     type,
@@ -20,12 +23,14 @@ export function h(type, props = {}, ...children) {
   }
 }
 
+// Keeps components as plain functions while making the intent explicit.
 export function defineComponent(renderFn) {
   return function component(props, ctx) {
     return renderFn(props, ctx)
   }
 }
 
+// Shared app state with subscriptions and optional localStorage persistence.
 export function createStore(initialState, options = {}) {
   const { persistKey } = options
   const listeners = new Set()
@@ -43,6 +48,7 @@ export function createStore(initialState, options = {}) {
     }
   }
 
+  // Persists state after every update so reloads keep the latest board data.
   function persist() {
     if (!persistKey) {
       return
@@ -51,6 +57,7 @@ export function createStore(initialState, options = {}) {
     localStorage.setItem(persistKey, JSON.stringify(state))
   }
 
+  // Notifies the app to rerender after the store changes.
   function notify() {
     persist()
     listeners.forEach((listener) => listener(state))
@@ -82,10 +89,12 @@ export function createStore(initialState, options = {}) {
   }
 }
 
+// Reads the current hash so the example can route without a backend server.
 function getCurrentPath() {
   return window.location.hash.replace(/^#/, "") || "/"
 }
 
+// Matches simple routes like /boards/:boardId and extracts params.
 function matchPath(pattern, path) {
   const patternParts = pattern.split("/").filter(Boolean)
   const pathParts = path.split("/").filter(Boolean)
@@ -113,10 +122,12 @@ function matchPath(pattern, path) {
   return params
 }
 
+// Small hash router that rerenders the app when the URL changes.
 export function createRouter(routes) {
   const listeners = new Set()
   let currentRoute = resolveRoute(getCurrentPath())
 
+  // Finds the first matching route and falls back to a not-found view.
   function resolveRoute(path) {
     for (const route of routes) {
       const params = matchPath(route.path, path)
@@ -138,6 +149,7 @@ export function createRouter(routes) {
     }
   }
 
+  // Updates the cached route and informs subscribers.
   function notify() {
     currentRoute = resolveRoute(getCurrentPath())
     listeners.forEach((listener) => listener(currentRoute))
@@ -173,6 +185,7 @@ export function createRouter(routes) {
   }
 }
 
+// Runs event helpers before calling the final handler.
 function applyEventSpec(event, spec, ctx) {
   if (typeof spec === "function") {
     spec(event, ctx)
@@ -190,6 +203,7 @@ function applyEventSpec(event, spec, ctx) {
   spec.handler(event, ctx)
 }
 
+// Maps framework props to real DOM attributes, styles, and events.
 function applyProps(element, props, ctx) {
   Object.entries(props).forEach(([key, value]) => {
     if (key === "children" || value === null || value === undefined) {
@@ -213,6 +227,7 @@ function applyProps(element, props, ctx) {
       return
     }
 
+    // Direct events are attached when the element is created.
     if (key === "on" && typeof value === "object") {
       Object.entries(value).forEach(([eventName, spec]) => {
         element.addEventListener(eventName, (event) => {
@@ -225,6 +240,7 @@ function applyProps(element, props, ctx) {
       return
     }
 
+    // Delegated events let one parent manage clicks for many child elements.
     if (key === "delegate" && typeof value === "object") {
       Object.entries(value).forEach(([eventName, specs]) => {
         element.addEventListener(eventName, (event) => {
@@ -274,11 +290,13 @@ function applyProps(element, props, ctx) {
   })
 }
 
+// Turns a virtual node tree into real DOM nodes.
 function createDomNode(node, ctx) {
   if (typeof node === "string" || typeof node === "number") {
     return document.createTextNode(String(node))
   }
 
+    // Function components are resolved before creating DOM.
   if (typeof node.type === "function") {
     return createDomNode(node.type({ ...node.props, children: node.children }, ctx), ctx)
   }
@@ -293,8 +311,10 @@ function createDomNode(node, ctx) {
   return element
 }
 
+// Wires the store and router to a single render function.
 export function createApp({ root, store, router, render }) {
   function rerender() {
+    // This tiny example replaces the full tree on each update for simplicity.
     const view = render({
       store,
       route: router.getRoute(),

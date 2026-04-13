@@ -1,9 +1,11 @@
+// Seed data gives the example a usable board immediately after first load.
 export const seedState = {
   query: "",
   boards: [
     {
       id: "product-roadmap",
       name: "Product Roadmap",
+      // Columns are nested inside each board in this simple learning data model.
       columns: [
         {
           id: "todo",

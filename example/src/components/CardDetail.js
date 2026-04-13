@@ -1,5 +1,6 @@
 import { defineComponent, h } from "../framework.js"
 
+// Side panel that reflects the card currently selected by the URL.
 export const CardDetail = defineComponent(({ board, card, close }) => {
   if (!board || !card) {
     return h(
@@ -13,6 +14,7 @@ export const CardDetail = defineComponent(({ board, card, close }) => {
   return h(
     "aside",
     { className: "detail" },
+    // This stays read-only in the learning build so the route behavior is easier to follow.
     h("p", { className: "eyebrow" }, board.name),
     h("h3", {}, card.title),
     h("p", {}, card.description || "No description yet."),
