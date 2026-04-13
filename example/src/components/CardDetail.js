@@ -7,18 +7,18 @@ export const CardDetail = defineComponent(({ board, card, close }) => {
       "aside",
       { className: "detail detail--empty" },
       h("h3", {}, "No card selected"),
-      h("p", {}, "Pick a card from the board to inspect its details.")
+      h("p", {}, "Pick a card from the board to inspect its details. The card route keeps this view shareable by URL.")
     )
   }
 
   return h(
     "aside",
-    { className: "detail" },
-    // This stays read-only in the learning build so the route behavior is easier to follow.
+    { className: "detail stack" },
     h("p", { className: "eyebrow" }, board.name),
     h("h3", {}, card.title),
     h("p", {}, card.description || "No description yet."),
     h("p", { className: "detail__meta" }, `Assignee: ${card.assignee || "Unassigned"}`),
+    h("p", { className: "detail__meta" }, `Card route: /boards/${board.id}/cards/${card.id}`),
     h(
       "button",
       {

@@ -1,7 +1,7 @@
 import { defineComponent, h } from "../framework.js"
 
 // Small form component for creating cards inside a single column.
-export const CardForm = defineComponent(({ boardId, columnId, onAdd }) => {
+export const CardForm = defineComponent(({ boardId, columnId, defaultAssignee, onAdd }) => {
   return h(
     "form",
     {
@@ -34,7 +34,7 @@ export const CardForm = defineComponent(({ boardId, columnId, onAdd }) => {
       }
     },
     h("input", { name: "title", placeholder: "New card title", required: true }),
-    h("input", { name: "assignee", placeholder: "Assignee" }),
+    h("input", { name: "assignee", placeholder: `Assignee or blank for ${defaultAssignee}` }),
     h("textarea", { name: "description", placeholder: "Short description", rows: "3" }),
     h("button", { className: "button button--ghost", type: "submit" }, "Add card")
   )

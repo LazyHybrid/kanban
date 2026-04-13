@@ -1,0 +1,28 @@
+{
+  "loadedAt": "2026-04-13",
+  "templates": [
+    {
+      "id": "remote-template-release",
+      "title": "Prepare stakeholder update",
+      "description": "Summarize the current board state and the next delivery milestone.",
+      "assignee": "Remote Ops"
+    }
+  ],
+  "tips": [
+    {
+      "id": "tip-1",
+      "title": "Keep filters in the URL",
+      "body": "Shareable filters make board views reviewable and reproducible."
+    },
+    {
+      "id": "tip-2",
+      "title": "Batch repetitive updates",
+      "body": "Bulk operations should use store.batch() so they schedule one render instead of many."
+    },
+    {
+      "id": "tip-3",
+      "title": "Use delegated board actions",
+      "body": "Move and delete controls should be handled at the board container level to keep dynamic lists simple."
+    }
+  ]
+}

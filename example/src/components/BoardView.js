@@ -1,7 +1,7 @@
 import { defineComponent, h } from "../framework.js"
 import { CardForm } from "./CardForm.js"
 
-// Applies the quick search box to each column's card list.
+// Applies the URL query filter to each column's card list.
 function filteredCards(cards, query) {
   if (!query) {
     return cards
@@ -16,11 +16,12 @@ function filteredCards(cards, query) {
   })
 }
 
-export const BoardView = defineComponent(({ board, navigate, onAddCard, onDeleteCard, onMoveCard, query }) => {
+// Main board page demonstrating delegated events, forms, and URL-driven detail routes.
+export const BoardView = defineComponent(({ board, metrics, navigate, onAddCard, onAddRemoteTemplate, onBulkAdd, onDeleteCard, onMoveCard, onToggleFavorite, performance, preferences, query, remote }) => {
   return h(
     "section",
     {
-      className: "board-view",
+      className: "board-view stack",
       // The parent board container handles card actions through delegation.
       delegate: {
         click: [
@@ -52,7 +53,12 @@ export const BoardView = defineComponent(({ board, navigate, onAddCard, onDelete
             selector: ".kanban-card",
             handler: (_, ctx) => {
               // Opening a card updates the URL so the detail view is route-driven.
-              navigate(`/boards/${board.id}/cards/${ctx.delegateTarget.dataset.cardId}`)
+              navigate({
+                path: `/boards/${board.id}/cards/${ctx.delegateTarget.dataset.cardId}`,
+                query: {
+                  q: query
+                }
+              })
             }
           }
         ]
@@ -60,9 +66,61 @@ export const BoardView = defineComponent(({ board, navigate, onAddCard, onDelete
     },
     h(
       "header",
-      { className: "panel board-header" },
-      h("div", {}, h("p", { className: "eyebrow" }, "Board"), h("h2", {}, board.name)),
-      h("p", { className: "board-header__note" }, "Cards open through a route, while move and delete actions are delegated from the parent board container.")
+      { className: "panel board-header stack" },
+      h(
+        "div",
+        { className: "board-header__top" },
+        h(
+          "div",
+          { className: "stack stack--tight" },
+          h("p", { className: "eyebrow" }, "Board"),
+          h("h2", {}, board.name),
+          h("p", { className: "board-header__note" }, "This page uses shared state, URL filters, parent-level delegated events, form submissions, and a route-driven detail panel.")
+        ),
+        h(
+          "button",
+          {
+            className: "button button--ghost",
+            on: {
+              click: () => onToggleFavorite(board.id)
+            }
+          },
+          board.favorite ? "Unfavorite board" : "Favorite board"
+        )
+      ),
+      h(
+        "div",
+        { className: "button-row" },
+        h(
+          "button",
+          {
+            className: "button",
+            on: {
+              click: () => onBulkAdd(board.id, board.columns[0].id, 24)
+            }
+          },
+          "Add 24 cards in one batch"
+        ),
+        h(
+          "button",
+          {
+            className: "button button--ghost",
+            disabled: remote.status !== "ready",
+            on: {
+              click: () => onAddRemoteTemplate(board.id, board.columns[0].id)
+            }
+          },
+          "Add remote template"
+        )
+      ),
+      h(
+        "div",
+        { className: "metrics-grid" },
+        h("div", { className: "metric-card" }, h("span", { className: "metric-card__label" }, "Filter"), h("strong", {}, query || "none")),
+        h("div", { className: "metric-card" }, h("span", { className: "metric-card__label" }, "Renders"), h("strong", {}, String(metrics.renderCount))),
+        h("div", { className: "metric-card" }, h("span", { className: "metric-card__label" }, "Last bulk"), h("strong", {}, performance.lastBulkCount ? `${performance.lastBulkCount} cards / ${performance.renderDelta || 1} render` : "Not run yet")),
+        h("div", { className: "metric-card" }, h("span", { className: "metric-card__label" }, "Default assignee"), h("strong", {}, preferences.preferredAssignee))
+      )
     ),
     h(
       "div",
@@ -91,6 +149,9 @@ export const BoardView = defineComponent(({ board, navigate, onAddCard, onDelete
                       className: "kanban-card",
                       dataset: {
                         cardId: card.id
+                      },
+                      style: {
+                        borderColor: board.favorite ? "rgba(184, 92, 56, 0.5)" : "#d4c3a8"
                       }
                     },
                     h("h4", {}, card.title),
@@ -157,6 +218,7 @@ export const BoardView = defineComponent(({ board, navigate, onAddCard, onDelete
           h(CardForm, {
             boardId: board.id,
             columnId: column.id,
+            defaultAssignee: preferences.preferredAssignee,
             onAdd: onAddCard
           })
         )

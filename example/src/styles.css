@@ -1,4 +1,4 @@
-/* Shared color tokens keep the demo styling consistent and easy to tweak. */
+/* Shared color tokens keep the example styling consistent and easy to tweak. */
 :root {
   color-scheme: light;
   --bg: #f7f4ee;
@@ -10,6 +10,8 @@
   --accent: #b85c38;
   --accent-strong: #8d4122;
   --danger: #8b2d2d;
+  --success: #2f6b50;
+  --info: #236a8f;
   --shadow: 0 16px 40px rgba(74, 54, 38, 0.12);
 }
 
@@ -29,7 +31,8 @@ body {
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
 }
 
@@ -37,25 +40,36 @@ textarea {
   min-height: 100vh;
 }
 
-/* Main page shell used by the dashboard and board views. */
+/* Main page shell used by the dashboard, board, and settings views. */
 .shell {
-  width: min(1200px, calc(100% - 32px));
+  width: min(1220px, calc(100% - 32px));
   margin: 0 auto;
   padding: 24px 0 48px;
 }
 
-/* Card-like panels give the demo a consistent visual language. */
+.shell[data-theme="forest"] {
+  --accent: #2f6b50;
+  --accent-strong: #234c39;
+}
+
+.shell[data-theme="ocean"] {
+  --accent: #236a8f;
+  --accent-strong: #184c66;
+}
+
+/* Card-like panels give the example a consistent visual language. */
 .hero,
 .panel,
 .column,
 .detail,
-.board-tile {
+.board-tile,
+.metric-card {
   background: var(--panel);
   border: 1px solid rgba(212, 195, 168, 0.8);
   box-shadow: var(--shadow);
 }
 
-/* The hero introduces the app and exposes live shared-state totals. */
+/* The hero introduces the app and exposes shared-state totals. */
 .hero {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -70,7 +84,9 @@ textarea {
 .detail__meta,
 .topbar__link,
 .board-tile p,
-.kanban-card p {
+.kanban-card p,
+.status,
+.field__label {
   color: var(--muted);
 }
 
@@ -91,18 +107,27 @@ textarea {
   margin: 0;
 }
 
-.hero__stats {
+.hero__stats,
+.stack,
+.settings-form,
+.field {
   display: grid;
   gap: 12px;
 }
 
-.stat {
+.stack--tight {
+  gap: 8px;
+}
+
+.stat,
+.metric-card {
   padding: 14px 16px;
   border-radius: 18px;
   background: var(--panel-strong);
 }
 
-.stat__label {
+.stat__label,
+.metric-card__label {
   display: block;
   margin-bottom: 6px;
   font-size: 0.82rem;
@@ -119,15 +144,43 @@ textarea {
   margin: 18px 0 24px;
 }
 
+.nav-links,
+.topbar__tools,
+.button-row,
+.board-header__top,
+.board-tile__header,
+.column__header,
+.kanban-card__footer,
+.kanban-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.board-header__top,
+.column__header,
+.kanban-card__footer,
+.board-tile__header {
+  justify-content: space-between;
+}
+
 .topbar__link {
   text-decoration: none;
   font-weight: 700;
+  padding: 8px 12px;
+  border-radius: 999px;
+}
+
+.topbar__link--active {
+  background: var(--panel-strong);
 }
 
 /* Search and form fields share the same input styling. */
 .search,
 .card-form input,
-.card-form textarea {
+.card-form textarea,
+.settings-form input,
+.settings-form select {
   width: 100%;
   padding: 12px 14px;
   border-radius: 14px;
@@ -136,19 +189,42 @@ textarea {
 }
 
 .search {
-  max-width: 340px;
+  min-width: 320px;
 }
 
 .content,
-/* The workspace places the board beside the card detail panel. */
-.workspace {
+.dashboard-grid,
+.workspace,
+.board-grid,
+.column-grid,
+.metrics-grid,
+.card-stack,
+.card-form,
+.list {
   display: grid;
-  gap: 20px;
+  gap: 18px;
 }
 
+/* The workspace places the board beside the card detail panel. */
 .workspace {
   grid-template-columns: minmax(0, 1fr) 320px;
   align-items: start;
+}
+
+.dashboard-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.board-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.column-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.metrics-grid {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
 .panel,
@@ -163,39 +239,8 @@ textarea {
   padding: 20px;
 }
 
-/* Responsive grids make the demo readable without extra layout code. */
-.board-grid,
-.column-grid {
-  display: grid;
-  gap: 18px;
-}
-
-.board-grid {
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  margin-top: 16px;
-}
-
-.column-grid {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-}
-
 .column {
   padding: 18px;
-}
-
-.column__header,
-.board-header,
-.kanban-card__footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.card-stack,
-.card-form {
-  display: grid;
-  gap: 12px;
 }
 
 .card-stack {
@@ -211,19 +256,20 @@ textarea {
   cursor: pointer;
 }
 
-.kanban-card__actions {
-  display: flex;
-  gap: 8px;
-}
-
 .tag,
-.pill {
+.pill,
+.status {
   display: inline-flex;
   align-items: center;
   padding: 6px 10px;
   border-radius: 999px;
   background: var(--panel-strong);
   font-size: 0.85rem;
+}
+
+.status--error {
+  color: var(--danger);
+  background: rgba(139, 45, 45, 0.12);
 }
 
 /* Small action buttons keep move and delete controls visually secondary. */
@@ -255,23 +301,48 @@ textarea {
   color: var(--danger);
 }
 
+.mini-button--favorite {
+  color: var(--accent-strong);
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox input {
+  width: auto;
+}
+
+.list {
+  padding-left: 20px;
+}
+
+.list__item p {
+  margin: 6px 0 0;
+}
+
 .detail--empty {
   border-style: dashed;
 }
 
-/* Mobile layout collapses the two-column view into a single column. */
-@media (max-width: 920px) {
+/* Mobile layout collapses the multi-column views into one column. */
+@media (max-width: 960px) {
   .hero,
-  .workspace {
+  .workspace,
+  .dashboard-grid {
     grid-template-columns: 1fr;
   }
 
-  .topbar {
+  .topbar,
+  .board-header__top,
+  .button-row {
     flex-direction: column;
     align-items: stretch;
   }
 
   .search {
-    max-width: none;
+    min-width: 0;
   }
 }

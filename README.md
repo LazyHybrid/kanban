@@ -1,21 +1,22 @@
 # dot-js frontend-framework
 
-This repo now contains a small learning version of the project:
+This repository contains the required submission structure:
 
-- `framework/`: a tiny frontend framework built from scratch with plain JavaScript.
-- `example/`: a small Kanban board that uses the framework.
+- `framework/`: the Dot JS frontend framework and its markdown documentation.
+- `example/`: a Kanban board that uses the framework features directly.
 
-This is intentionally basic. It is meant to help you and your teammate learn the architecture before trying to satisfy every requirement from the full brief.
+The framework is written from scratch with plain JavaScript and browser APIs only.
 
-## What is included
+## Included features
 
 - Declarative element creation with `h()`
 - Reusable function components with `defineComponent()`
-- A small app runner with `createApp()`
-- Shared state with subscriptions and `localStorage` persistence
-- Hash-based routing
-- Render-time event handlers
-- Parent-level delegated events
+- Shared state with subscriptions, persistence, and batching
+- Hash routing with params and query values
+- Render-time direct events and delegated events
+- Attributes, dataset values, and style objects
+- HTTP requests through a small framework client
+- Batched render scheduling with validation metrics in the example app
 
 ## Run it
 
@@ -29,17 +30,19 @@ Then open:
 
 - `http://localhost:4173/example/`
 
-## What to read first
+## Read this first
 
 1. `framework/README.md`
 2. `framework/src/index.js`
 3. `example/src/main.js`
 4. `example/src/app.js`
 
-## What this example does not try to do yet
+## What the example demonstrates
 
-- It does not implement a full diffing renderer.
-- It does not implement a full HTTP layer.
-- It does not try to pass the full project rubric.
-
-It gives you a simple, understandable base to extend.
+- state persisted between sessions
+- state shared across dashboard, board, card detail, and settings pages
+- URL-driven board selection, card detail, and search filtering
+- forms for cards and settings
+- delegated move and delete actions at the board container level
+- HTTP-loaded remote templates and team guidance
+- a measurable bulk-update performance flow using `store.batch()`

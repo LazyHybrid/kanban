@@ -1,11 +1,11 @@
 // Seed data gives the example a usable board immediately after first load.
 export const seedState = {
-  query: "",
   boards: [
     {
       id: "product-roadmap",
       name: "Product Roadmap",
-      // Columns are nested inside each board in this simple learning data model.
+      favorite: true,
+      // Columns are nested inside each board in this simple submission data model.
       columns: [
         {
           id: "todo",
@@ -54,6 +54,7 @@ export const seedState = {
     {
       id: "team-ops",
       name: "Team Ops",
+      favorite: false,
       columns: [
         {
           id: "backlog",
@@ -79,5 +80,21 @@ export const seedState = {
         }
       ]
     }
-  ]
+  ],
+  preferences: {
+    theme: "warm",
+    preferredAssignee: "Dot Team",
+    showRemoteTips: true
+  },
+  remote: {
+    status: "idle",
+    error: "",
+    templates: [],
+    tips: [],
+    loadedAt: ""
+  },
+  performance: {
+    lastBulkCount: 0,
+    lastBenchmarkStartRenderCount: 0
+  }
 }
